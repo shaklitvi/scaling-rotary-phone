@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0c0a08">
+<title>האירועים שלנו</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Heebo:wght@300;400;500;700&display=swap');
+
+:root {
+  --ink: #0c0a08;
+  --ink2: #1a1510;
+  --parchment: #f7f0e6;
+  --warm: #e8dcc8;
+  --gold: #c9a84c;
+  --gold-light: #e8c876;
+  --ember: #c4622d;
+  --sage: #5a7a5a;
+  --text: #2a1f14;
+  --muted: #8a7a6a;
+  --line: rgba(201,168,76,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--parchment);
+  color: var(--text);
+  font-family: 'Heebo', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999;
+  opacity: 0.6;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100svh;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(196,98,45,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 60%, rgba(90,122,90,0.06) 0%, transparent 50%);
+}
+
+/* Floating orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.orb-1 { width:300px; height:300px; background:rgba(201,168,76,0.08); top:-100px; right:-50px; animation-delay:0s; }
+.orb-2 { width:200px; height:200px; background:rgba(196,98,45,0.06); bottom:100px; left:-60px; animation-delay:-4s; }
+.orb-3 { width:150px; height:150px; background:rgba(90,122,90,0.05); top:40%; right:10%; animation-delay:-8s; }
+
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(20px, 30px) scale(1.1); }
+}
+
+/* Decorative lines */
+.hero-lines {
+  position: absolute; inset: 0;
+  background-image: 
+    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 0 28px;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 2px;
+  padding: 6px 14px;
+  margin-bottom: 24px;
+  animation: fadeUp 1s ease 0.2s both;
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(52px, 14vw, 80px);
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--parchment);
+  margin-bottom: 8px;
+  animation: fadeUp 1s ease 0.4s both;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(247,240,230,0.5);
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+  animation: fadeUp 1s ease 0.6s both;
+}
+
+.hero-scroll {
+  display: flex; align-items: center; gap: 12px;
+  color: rgba(247,240,230,0.35);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: fadeUp 1s ease 0.8s both;
+  cursor: pointer;
+}
+
+.scroll-line {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4));
+}
+
+/* ── WEEK STRIP ── */
+.week-strip {
+  background: var(--ink2);
+  border-bottom: 1px solid var(--line);
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky; top: 0; z-index: 50;
+}
+.week-strip::-webkit-scrollbar { display: none; }
+
+.week-inner {
+  display: flex; padding: 0 20px;
+  gap: 0;
+}
+
+.week-day {
+  flex: 0 0 auto;
+  padding: 14px 20px;
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.25s;
+  position: relative;
+}
+
+.week-day.active {
+  border-bottom-color: var(--gold);
+}
+
+.week-day-name {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(247,240,230,0.35);
+  margin-bottom: 2px;
+  transition: color 0.25s;
+}
+
+.week-day.active .week-day-name { color: var(--gold); }
+
+.week-day-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: rgba(247,240,230,0.5);
+  transition: color 0.25s;
+}
+
+.week-day.active .week-day-num { color: var(--parchment); }
+
+.week-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin: 4px auto 0;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.week-day.has-event .week-dot { opacity: 0.6; }
+.week-day.active .week-dot { opacity: 1; }
+
+/* ── EVENTS SECTION ── */
+.events-section {
+  padding: 0 0 120px;
+}
+
+.section-header {
+  padding: 48px 28px 32px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-count {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ── EVENT CARD ── */
+.event-card {
+  margin: 0 20px 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 20px rgba(12,10,8,0.08), 0 0 0 1px rgba(12,10,8,0.04);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s;
+  animation: fadeUp 0.5s ease both;
+  cursor: pointer;
+}
+
+.event-card:active {
+  transform: scale(0.985);
+}
+
+.event-card-top {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.event-visual {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+
+/* Each event type has its own visual identity */
+.visual-yoga {
+  background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 40%, #0d1a0d 100%);
+}
+.visual-kids {
+  background: linear-gradient(135deg, #2a1a08 0%, #4a3010 40%, #1a0e04 100%);
+}
+.visual-film {
+  background: linear-gradient(135deg, #08101a 0%, #102040 40%, #04080f 100%);
+}
+.visual-wine {
+  background: linear-gradient(135deg, #1a0808 0%, #3a1010 40%, #0f0404 100%);
+}
+
+.visual-emoji {
+  font-size: 72px;
+  filter: drop-shadow(0 0 40px rgba(255,255,255,0.1));
+  z-index: 1;
+  animation: floatEmoji 4s ease-in-out infinite;
+}
+
+@keyframes floatEmoji {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.visual-glow {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+
+.visual-yoga .visual-glow {
+  background: radial-gradient(ellipse at 50% 100%, rgba(90,122,90,0.3) 0%, transparent 70%);
+}
+.visual-kids .visual-glow {
+  background: radial-gradient(ellipse at 50% 100%, rgba(232,160,32,0.25) 0%, transparent 70%);
+}
+.visual-film .visual-glow {
+  background: radial-gradient(ellipse at 50% 100%, rgba(26,74,122,0.3) 0%, transparent 70%);
+}
+.visual-wine .visual-glow {
+  background: radial-gradient(ellipse at 50% 100%, rgba(196,98,45,0.3) 0%, transparent 70%);
+}
+
+.event-day-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: rgba(12,10,8,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(247,240,230,0.15);
+  border-radius: 2px;
+  padding: 6px 12px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(247,240,230,0.8);
+}
+
+.event-free-badge {
+  position: absolute;
+  top: 16px; left: 16px;
+  background: var(--sage);
+  border-radius: 2px;
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.event-card-body {
+  padding: 24px 24px 20px;
+}
+
+.event-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.event-meta {
+  display: flex; gap: 16px;
+  margin-bottom: 16px;
+}
+
+.event-meta-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.event-meta-icon { font-size: 13px; opacity: 0.7; }
+
+.event-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5a4a3a;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+.event-footer {
+  display: flex; gap: 10px; align-items: center;
+}
+
+.btn-join {
+  flex: 1;
+  background: var(--ink);
+  color: var(--parchment);
+  border: none;
+  border-radius: 3px;
+  padding: 14px 20px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-join::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(201,168,76,0.15));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-join:active {
+  transform: scale(0.97);
+  background: #1a1510;
+}
+
+.btn-share {
+  width: 48px; height: 48px;
+  background: transparent;
+  border: 1px solid rgba(12,10,8,0.12);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--muted);
+}
+
+.btn-share:active { background: rgba(12,10,8,0.05); }
+
+.attendees-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.attendee-dots {
+  display: flex;
+}
+
+.attendee-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -6px;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ink2);
+}
+
+.attendee-dot:first-child { margin-left: 0; }
+
+/* ── DIVIDER ── */
+.ornament-divider {
+  text-align: center;
+  margin: 8px 0 28px;
+  color: var(--gold);
+  font-size: 14px;
+  opacity: 0.4;
+  letter-spacing: 8px;
+}
+
+/* ── BOTTOM CTA ── */
+.bottom-cta {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(247,240,230,0.95);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(12,10,8,0.08);
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  z-index: 100;
+  display: flex; gap: 12px; align-items: center;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.bottom-cta.visible { transform: translateY(0); }
+
+.cta-text {
+  flex: 1;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cta-text strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.btn-cta-main {
+  background: var(--ink);
+  color: var(--parchment);
+  border: none;
+  border-radius: 3px;
+  padding: 12px 20px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+/* ── REGISTER SHEET ── */
+.sheet-overlay {
+  position: fixed; inset: 0;
+  background: rgba(12,10,8,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.sheet-overlay.open { opacity: 1; pointer-events: all; }
+
+.sheet {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--parchment);
+  border-radius: 20px 20px 0 0;
+  padding: 0 24px calc(40px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  max-height: 90svh;
+  overflow-y: auto;
+}
+
+.sheet-overlay.open .sheet { transform: translateY(0); }
+
+.sheet-handle {
+  width: 36px; height: 4px;
+  background: rgba(12,10,8,0.15);
+  border-radius: 2px;
+  margin: 16px auto 24px;
+}
+
+.sheet-event-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.sheet-event-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+}
+
+.field-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.field-input {
+  width: 100%;
+  background: white;
+  border: 1px solid rgba(12,10,8,0.1);
+  border-radius: 3px;
+  padding: 14px 16px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 16px;
+  -webkit-appearance: none;
+}
+
+.field-input:focus {
+  border-color: var(--gold);
+}
+
+.btn-confirm {
+  width: 100%;
+  background: var(--ink);
+  color: var(--parchment);
+  border: none;
+  border-radius: 3px;
+  padding: 16px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-confirm:active { transform: scale(0.98); }
+
+.privacy-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+/* ── SUCCESS STATE ── */
+.success-state {
+  text-align: center;
+  padding: 40px 0 20px;
+}
+
+.success-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  animation: pop 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.success-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.btn-whatsapp {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  background: #25D366;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 14px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+
+.btn-whatsapp:active { transform: scale(0.98); opacity: 0.9; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.event-card:nth-child(1) { animation-delay: 0ms; }
+.event-card:nth-child(2) { animation-delay: 80ms; }
+.event-card:nth-child(3) { animation-delay: 160ms; }
+.event-card:nth-child(4) { animation-delay: 240ms; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  top: 20px; left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--ink);
+  color: var(--parchment);
+  padding: 12px 24px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 999;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(12,10,8,0.3);
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" onclick="document.getElementById('events-section').scrollIntoView({behavior:'smooth'})">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-content">
+    <div class="hero-tag">ערבים מיוחדים · כל שבוע</div>
+    <div class="hero-title">ערבי<br><em>תרבות</em><br>ואוירה</div>
+    <div class="hero-subtitle">מוסיקה · יין · קולנוע · משפחה · שקיעה</div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>לאירועים</span>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK STRIP -->
+<div class="week-strip" id="week-strip"></div>
+
+<!-- EVENTS -->
+<section class="events-section" id="events-section">
+  <div class="section-header">
+    <div class="section-label">האירועים השבועיים</div>
+    <div class="section-count" id="event-count">4 ערבים</div>
+  </div>
+  <div id="events-list"></div>
+</section>
+
+<!-- BOTTOM CTA -->
+<div class="bottom-cta" id="bottom-cta">
+  <div class="cta-text">
+    <strong>רוצים לדעת מראש?</strong>
+    הירשמו לאירוע ונשלח תזכורת
+  </div>
+  <button class="btn-cta-main" onclick="openSheet(null)">הרשמה</button>
+</div>
+
+<!-- SHEET -->
+<div class="sheet-overlay" id="sheet" onclick="closeSheetOnBg(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div id="sheet-content"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const EVENTS = [
+  {
+    id: 1, day: 0, type: 'yoga',
+    name: 'יוגה שקיעה',
+    time: '18:00',
+    desc: 'שעה של שקט ותנועה רכה, עם נוף לשקיעה. מתאים לכל הרמות — מתחילים ומתקדמים.',
+    emoji: '🌅',
+    free: true,
+    registrants: JSON.parse(localStorage.getItem('reg_yoga') || '[]')
+  },
+  {
+    id: 2, day: 1, type: 'kids',
+    name: 'תוכן לכל המשפחה',
+    time: '17:00',
+    desc: 'אחר הצהריים של בילוי משפחתי — הצגות, סיפורים, ויצירה לילדים ולהורים יחד.',
+    emoji: '👨‍👩‍👧',
+    free: true,
+    registrants: JSON.parse(localStorage.getItem('reg_kids') || '[]')
+  },
+  {
+    id: 3, day: 2, type: 'film',
+    name: 'סינמה מצפור',
+    time: '21:00',
+    desc: 'סרט נבחר מוקרן מצפור. אווירה אינטימית, כוס משהו טוב ביד, ודיון קצר אחרי.',
+    emoji: '🎬',
+    free: true,
+    registrants: JSON.parse(localStorage.getItem('reg_film') || '[]')
+  },
+  {
+    id: 4, day: 3, type: 'wine',
+    name: 'יין ומוזיקה',
+    time: '20:00',
+    desc: 'ערב חי של מוסיקה אקוסטית עם יינות נבחרים. רומנטי, אינטימי, ובלתי נשכח.',
+    emoji: '🍷',
+    free: true,
+    registrants: JSON.parse(localStorage.getItem('reg_wine') || '[]')
+  }
+];
+
+const DAY_NAMES = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const DAY_SHORT = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+
+let currentEventId = null;
+
+function getNextWeekday(targetDay) {
+  const d = new Date();
+  const diff = (targetDay - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+
+function formatDate(date) {
+  const months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+  return `${date.getDate()} ב${months[date.getMonth()]}`;
+}
+
+function saveRegistrants(event) {
+  localStorage.setItem('reg_' + event.type, JSON.stringify(event.registrants));
+}
+
+// WEEK STRIP
+function renderWeekStrip() {
+  const strip = document.getElementById('week-strip');
+  const eventDays = new Set(EVENTS.map(e => e.day));
+  const today = new Date().getDay();
+
+  let html = '<div class="week-inner">';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + ((i - today + 7) % 7));
+    const isToday = i === 0;
+    const hasEvent = eventDays.has(d.getDay());
+    html += `<div class="week-day ${isToday?'active':''} ${hasEvent?'has-event':''}">
+      <div class="week-day-name">${DAY_SHORT[d.getDay()]}</div>
+      <div class="week-day-num">${d.getDate()}</div>
+      <div class="week-dot"></div>
+    </div>`;
+  }
+  html += '</div>';
+  strip.innerHTML = html;
+}
+
+// EVENTS
+function renderEvents() {
+  const list = document.getElementById('events-list');
+  list.innerHTML = EVENTS.map((ev, i) => {
+    const date = getNextWeekday(ev.day);
+    const count = ev.registrants.length;
+    const dots = count > 0 ? 
+      `<div class="attendees-hint">
+        <div class="attendee-dots">${Array.from({length:Math.min(count,3)},(_,j)=>`<div class="attendee-dot">${['😊','🙂','😄'][j]}</div>`).join('')}</div>
+        <span>${count === 1 ? 'אדם אחד' : count + ' אנשים'} כבר נרשמו</span>
+      </div>` : '';
+
+    return `
+    <div class="event-card" style="animation-delay:${i*80}ms">
+      <div class="event-card-top">
+        <div class="event-visual visual-${ev.type}">
+          <div class="visual-glow"></div>
+          <div class="visual-emoji">${ev.emoji}</div>
+        </div>
+        <div class="event-day-badge">יום ${DAY_NAMES[ev.day]}</div>
+        ${ev.free ? '<div class="event-free-badge">ללא עלות</div>' : ''}
+      </div>
+      <div class="event-card-body">
+        <div class="event-name">${ev.name}</div>
+        <div class="event-meta">
+          <div class="event-meta-item">
+            <span class="event-meta-icon">🕐</span>
+            <span>${ev.time}</span>
+          </div>
+          <div class="event-meta-item">
+            <span class="event-meta-icon">📅</span>
+            <span>${formatDate(date)}</span>
+          </div>
+        </div>
+        <div class="event-desc">${ev.desc}</div>
+        ${dots}
+        <div class="event-footer" style="margin-top:${dots?'8px':'0'}">
+          <button class="btn-join" onclick="openSheet(${ev.id})">אני בא ✓</button>
+          <button class="btn-share" onclick="shareEvent(${ev.id})">📤</button>
+        </div>
+      </div>
+    </div>
+    <div class="ornament-divider">· · ·</div>`;
+  }).join('');
+}
+
+// SCROLL → show bottom CTA
+const cta = document.getElementById('bottom-cta');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 200) cta.classList.add('visible');
+  else cta.classList.remove('visible');
+}, { passive: true });
+
+// SHEET
+function openSheet(eventId) {
+  currentEventId = eventId;
+  const ev = eventId ? EVENTS.find(e => e.id === eventId) : null;
+  const date = ev ? getNextWeekday(ev.day) : null;
+
+  document.getElementById('sheet-content').innerHTML = `
+    <div class="sheet-event-name">${ev ? ev.name : 'הרשמה לאירועים'}</div>
+    <div class="sheet-event-meta">${ev ? `יום ${DAY_NAMES[ev.day]}, ${formatDate(date)} · ${ev.time}` : 'בחר אירוע והירשם'}</div>
+    ${!ev ? `<label class="field-label">איזה אירוע?</label>
+    <select class="field-input" id="reg-event" style="cursor:pointer">
+      ${EVENTS.map(e=>`<option value="${e.id}">${e.emoji} ${e.name} — יום ${DAY_NAMES[e.day]}</option>`).join('')}
+    </select>` : ''}
+    <label class="field-label">שם</label>
+    <input class="field-input" id="reg-name" type="text" placeholder="ישראל ישראלי" autocomplete="name" />
+    <label class="field-label">טלפון לתזכורת</label>
+    <input class="field-input" id="reg-phone" type="tel" placeholder="050-0000000" autocomplete="tel" />
+    <button class="btn-confirm" onclick="confirmReg()">אני בא ✓</button>
+    <div class="privacy-note">מספרך ישמש לתזכורת בלבד.<br>לא מועבר לאף גורם.</div>
+  `;
+  document.getElementById('sheet').classList.add('open');
+  setTimeout(() => document.getElementById('reg-name')?.focus(), 400);
+}
+
+function closeSheetOnBg(e) {
+  if (e.target.id === 'sheet') closeSheet();
+}
+
+function closeSheet() {
+  document.getElementById('sheet').classList.remove('open');
+}
+
+function confirmReg() {
+  const name = document.getElementById('reg-name')?.value.trim();
+  const phone = document.getElementById('reg-phone')?.value.trim();
+  if (!name || !phone) { showToast('נא למלא שם וטלפון'); return; }
+
+  const evId = currentEventId || parseInt(document.getElementById('reg-event')?.value);
+  const ev = EVENTS.find(e => e.id === evId);
+  ev.registrants.push({ name, phone, time: new Date().toISOString() });
+  saveRegistrants(ev);
+
+  const date = getNextWeekday(ev.day);
+  const waText = encodeURIComponent(`היי! נרשמתי ל${ev.name} ביום ${DAY_NAMES[ev.day]}, ${formatDate(date)} בשעה ${ev.time} 🎉`);
+
+  document.getElementById('sheet-content').innerHTML = `
+    <div class="success-state">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">נרשמת בהצלחה!</div>
+      <div class="success-sub">נשמח לראות אותך ב<strong>${ev.name}</strong><br>יום ${DAY_NAMES[ev.day]}, ${formatDate(date)} · ${ev.time}</div>
+      <a class="btn-whatsapp" href="https://wa.me/?text=${waText}" target="_blank">
+        💬 שתף בוואטסאפ
+      </a>
+      <button class="btn-confirm" style="background:transparent;border:1px solid rgba(12,10,8,0.12);color:var(--text)" onclick="closeSheet()">סגור</button>
+    </div>
+  `;
+
+  renderEvents();
+}
+
+function shareEvent(id) {
+  const ev = EVENTS.find(e => e.id === id);
+  const date = getNextWeekday(ev.day);
+  const text = `${ev.emoji} *${ev.name}*\nיום ${DAY_NAMES[ev.day]}, ${formatDate(date)} · ${ev.time}\n${ev.free ? '✅ כניסה חופשית' : ''}\n\n${ev.desc}`;
+  if (navigator.share) {
+    navigator.share({ title: ev.name, text });
+  } else {
+    navigator.clipboard?.writeText(text);
+    showToast('הועתק ✓');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// INIT
+renderWeekStrip();
+renderEvents();
+</script>
+</body>
+</html>
